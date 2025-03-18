@@ -30,6 +30,7 @@ def next_page():
         st.session_state.page += 1
         st.session_state.play_sound = True
 
+
 def previous_page():
     if st.session_state.page > 0:
         st.session_state.page -= 1
@@ -39,7 +40,7 @@ def previous_page():
 st.markdown("""
     <style>
         body, .stApp {
-            cursor: url('https://cdn-icons-png.flaticon.com/512/2913/2913461.png'), auto;
+            cursor: url('https://cdn-icons-png.flaticon.com/128/3208/3208614.png'), auto;
         }
         .fade-in {
             animation: fadeIn 1s ease-in;
@@ -64,17 +65,19 @@ st.markdown("""
         }
         @keyframes glitter {
             0% { filter: brightness(1); }
-            100% { filter: brightness(1.3); }
+            100% { filter: brightness(1.5); }
         }
     </style>
 """, unsafe_allow_html=True)
 
 # Load and play sound if triggered
 sound_file_path = "hairdryer.mp3"
-if st.session_state.play_sound and os.path.exists(sound_file_path):
-    audio_bytes = open(sound_file_path, "rb").read()
-    st.audio(audio_bytes, format='audio/mp3', start_time=0)
-    st.session_state.play_sound = False
+if os.path.exists(sound_file_path):
+    with open(sound_file_path, "rb") as audio_file:
+        audio_bytes = audio_file.read()
+        if st.session_state.play_sound:
+            st.audio(audio_bytes, format='audio/mp3', start_time=0)
+            st.session_state.play_sound = False
 
 # Display current image with fade-in effect (ONLY once)
 current_image_path, links = images[st.session_state.page]
@@ -126,5 +129,3 @@ for i in range(len(images)):
     else:
         dot_container += "<span style='font-size: 20px; color: lightgray;'>●</span> "
 st.markdown(f"<div style='text-align:center; margin-top:10px;'>{dot_container}</div>", unsafe_allow_html=True)
-
-
