@@ -13,7 +13,7 @@ images = [
     ("5.png", None),
     ("6.png", {
         "instagram": "https://www.instagram.com/rosalindaloveshair_12/",
-        "facebook": "https://www.facebook.com/rosalindaloveshair",
+        "facebook": "https://m.facebook.com/RosalindaClarrissaCruz/",
         "booking": "https://square.site/book/HW1YNE3B0FZ67/rosalinda-cruz-at-salon-bella-donna-corpus-christi-tx?fbclid=PAZXh0bgNhZW0CMTEAAabRjSFT30xtjXx2JwnlKrdyQv6J_4G-WAeo3L3TkVFRjrAPXyKqR4J431M_aem_ErJY2t3JTZ-oYEt5DUlSEA"
     })
 ]
