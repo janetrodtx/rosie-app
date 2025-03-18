@@ -18,23 +18,6 @@ images = [
     })
 ]
 
-# Session state to track current page
-if "page" not in st.session_state:
-    st.session_state.page = 0
-if "play_sound" not in st.session_state:
-    st.session_state.play_sound = False
-
-# Navigation functions
-def next_page():
-    if st.session_state.page < len(images) - 1:
-        st.session_state.page += 1
-        st.session_state.play_sound = True
-
-def previous_page():
-    if st.session_state.page > 0:
-        st.session_state.page -= 1
-        st.session_state.play_sound = True
-
 # Add custom CSS for glam
 st.markdown("""
     <style>
@@ -69,63 +52,40 @@ st.markdown("""
     </style>
 """, unsafe_allow_html=True)
 
-# Load and play sound if triggered
+# Load and play sound
 sound_file_path = "hairdryer.mp3"
 if os.path.exists(sound_file_path):
     with open(sound_file_path, "rb") as audio_file:
         audio_bytes = audio_file.read()
-        if st.session_state.play_sound:
-            st.audio(audio_bytes, format='audio/mp3', start_time=0)
-            st.session_state.play_sound = False
+        st.audio(audio_bytes, format='audio/mp3', start_time=0)
 
-# Display current image with fade-in effect (ONLY once)
-current_image_path, links = images[st.session_state.page]
-try:
-    with open(current_image_path, "rb") as img_file:
-        image_bytes = img_file.read()
-        encoded_image = base64.b64encode(image_bytes).decode()
-except FileNotFoundError:
-    st.error(f"Image file not found: {current_image_path}")
+# Display all images vertically
+for idx, (img_path, links) in enumerate(images):
+    try:
+        with open(img_path, "rb") as img_file:
+            image_bytes = img_file.read()
+            encoded_image = base64.b64encode(image_bytes).decode()
+    except FileNotFoundError:
+        st.error(f"Image file not found: {img_path}")
+        continue
 
-# If on last page, show clickable image for booking only with sparkle effect
-if links:
-    st.markdown(f"""
-        <a href='{links['booking']}' target='_blank'>
-            <img src='data:image/png;base64,{encoded_image}' class='fade-in sparkle' style='width:100%; border-radius:10px;' />
-        </a>
-    """, unsafe_allow_html=True)
-else:
-    st.markdown(f"""
-        <img src='data:image/png;base64,{encoded_image}' class='fade-in' style='width:100%; border-radius:10px;' />
-    """, unsafe_allow_html=True)
+    if links:
+        st.markdown(f"""
+            <a href='{links['booking']}' target='_blank'>
+                <img src='data:image/png;base64,{encoded_image}' class='fade-in sparkle' style='width:100%; border-radius:10px;' />
+            </a>
+        """, unsafe_allow_html=True)
 
-# If on last page, add Instagram, Facebook, and Booking buttons in pink
-if links:
-    st.markdown("""
-        <div style='text-align:center; margin-top: 20px;'>
-            <a href='{instagram}' target='_blank' class='pink-button'>📷 Visit Instagram</a> |
-            <a href='{facebook}' target='_blank' class='pink-button'>📘 Visit Facebook</a> |
-            <a href='{booking}' target='_blank' class='pink-button'>📅 Book Appointment</a>
-        </div>
-    """.format(instagram=links['instagram'], facebook=links['facebook'], booking=links['booking']), unsafe_allow_html=True)
-
-# Navigation Buttons (Back and Next)
-nav_col1, nav_col2 = st.columns([0.15, 0.85])
-with nav_col1:
-    if st.session_state.page > 0:
-        if st.button("⬅️ Back", key="back_button"):
-            previous_page()
-with nav_col2:
-    if st.session_state.page < len(images) - 1:
-        if st.button("Next ➡️", key="next_button"):
-            next_page()
-
-# Progress dots
-dot_container = ""
-for i in range(len(images)):
-    if i == st.session_state.page:
-        dot_container += "<span style='font-size: 24px; color: pink;'>●</span> "
+        st.markdown("""
+            <div style='text-align:center; margin-top: 20px;'>
+                <a href='{instagram}' target='_blank' class='pink-button'>📷 Visit Instagram</a> |
+                <a href='{facebook}' target='_blank' class='pink-button'>📘 Visit Facebook</a> |
+                <a href='{booking}' target='_blank' class='pink-button'>📅 Book Appointment</a>
+            </div>
+        """.format(instagram=links['instagram'], facebook=links['facebook'], booking=links['booking']), unsafe_allow_html=True)
     else:
-        dot_container += "<span style='font-size: 20px; color: lightgray;'>●</span> "
-st.markdown(f"<div style='text-align:center; margin-top:10px;'>{dot_container}</div>", unsafe_allow_html=True)
+        st.markdown(f"""
+            <img src='data:image/png;base64,{encoded_image}' class='fade-in' style='width:100%; border-radius:10px;' />
+        """, unsafe_allow_html=True)
+
 
