@@ -28,10 +28,8 @@ def next_page():
 # Display current image
 current_image_path, links = images[st.session_state.page]
 try:
-    with open(current_image_path, "rb") as img_file:
-        image_bytes = img_file.read()
-        image = Image.open(io.BytesIO(image_bytes))
-        st.image(image, use_container_width=True)
+    image = Image.open(current_image_path)
+    st.image(image, use_container_width=True)
 except FileNotFoundError:
     st.error(f"Image file not found: {current_image_path}")
 
@@ -45,8 +43,11 @@ if links:
         if st.button("Book Appointment 📅", key="book"):
             st.markdown(f"[Click here to book]({links['booking']})", unsafe_allow_html=True)
 
-    # Clickable image for booking link (displayed)
-    encoded_image = base64.b64encode(image_bytes).decode()
+    # Clickable image for booking link using Streamlit markdown and base64
+    with open(current_image_path, "rb") as img_file:
+        image_bytes = img_file.read()
+        encoded_image = base64.b64encode(image_bytes).decode()
+
     st.markdown(f"""
         <a href='{links['booking']}' target='_blank'>
             <img src='data:image/png;base64,{encoded_image}' style='width:100%; border-radius:10px;'/>
@@ -59,4 +60,3 @@ if st.session_state.page < len(images) - 1:
     with col:
         if st.button("Next ➡️", key="next_button"):
             next_page()
-
