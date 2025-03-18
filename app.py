@@ -2,6 +2,7 @@ import streamlit as st
 from PIL import Image
 import base64
 import io
+import os
 
 # Image paths (relative to app.py) and corresponding links for the last page
 images = [
@@ -20,15 +21,19 @@ images = [
 # Session state to track current page
 if "page" not in st.session_state:
     st.session_state.page = 0
+if "play_sound" not in st.session_state:
+    st.session_state.play_sound = False
 
 # Navigation functions
 def next_page():
     if st.session_state.page < len(images) - 1:
         st.session_state.page += 1
+        st.session_state.play_sound = True
 
 def previous_page():
     if st.session_state.page > 0:
         st.session_state.page -= 1
+        st.session_state.play_sound = True
 
 # Add custom CSS for glam
 st.markdown("""
@@ -63,6 +68,13 @@ st.markdown("""
         }
     </style>
 """, unsafe_allow_html=True)
+
+# Load and play sound if triggered
+sound_file_path = "hairdryer.mp3"
+if st.session_state.play_sound and os.path.exists(sound_file_path):
+    audio_bytes = open(sound_file_path, "rb").read()
+    st.audio(audio_bytes, format='audio/mp3', start_time=0)
+    st.session_state.play_sound = False
 
 # Display current image with fade-in effect (ONLY once)
 current_image_path, links = images[st.session_state.page]
