@@ -1,6 +1,7 @@
 import streamlit as st
+from PIL import Image
 
-# Image paths
+# Image paths and corresponding links for the last page
 images = [
     ("/mnt/data/1.png", None),
     ("/mnt/data/2.png", None),
@@ -23,29 +24,30 @@ def next_page():
         st.session_state.page += 1
 
 # Display current image
-current_image, links = images[st.session_state.page]
-st.image(current_image, use_column_width=True)
+current_image_path, links = images[st.session_state.page]
+image = Image.open(current_image_path)
+st.image(image, use_container_width=True)
 
 # If on last page, add clickable elements
 if links:
-    col1, col2 = st.columns([1,1])
+    col1, col2 = st.columns(2)
     with col1:
-        if st.button("Visit Instagram", key="insta"):
-            st.markdown(f"[Click here to visit Instagram]({links['instagram']})")
+        if st.button("Visit Instagram 📷", key="insta"):
+            st.markdown(f"[Click here to visit Instagram]({links['instagram']})", unsafe_allow_html=True)
     with col2:
-        if st.button("Book Appointment", key="book"):
-            st.markdown(f"[Click here to book]({links['booking']})")
+        if st.button("Book Appointment 📅", key="book"):
+            st.markdown(f"[Click here to book]({links['booking']})", unsafe_allow_html=True)
 
-    # Make image clickable for booking
-    st.markdown(f"<a href='{links['booking']}' target='_blank'><img src='data:image/png;base64,{st.image(current_image, use_column_width=True)}' style='display:none;'/></a>", unsafe_allow_html=True)
+    # Clickable image for booking link
+    st.markdown(f"""
+        <a href='{links['booking']}' target='_blank'>
+            <img src='data:image/png;base64,{image}' style='display:none;'/>
+        </a>
+    """, unsafe_allow_html=True)
 
 # Pink "Next" arrow button
 if st.session_state.page < len(images) - 1:
-    st.markdown("""
-        <div style='text-align: right; padding: 20px;'>
-            <button onclick='window.location.reload()' style='background-color: pink; color: white; border: none; padding: 10px 20px; font-size: 16px; border-radius: 5px;'>
-                Next ➡️
-            </button>
-        </div>
-    """, unsafe_allow_html=True)
-    st.button("", on_click=next_page, key="next_button")
+    col = st.columns([0.85, 0.15])[1]
+    with col:
+        if st.button("Next ➡️", key="next_button"):
+            next_page()
