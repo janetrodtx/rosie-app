@@ -30,7 +30,6 @@ def next_page():
         st.session_state.page += 1
         st.session_state.play_sound = True
 
-
 def previous_page():
     if st.session_state.page > 0:
         st.session_state.page -= 1
@@ -40,7 +39,7 @@ def previous_page():
 st.markdown("""
     <style>
         body, .stApp {
-            cursor: url('https://cdn-icons-png.flaticon.com/128/3208/3208614.png'), auto;
+            cursor: url('https://cur.cursors-4u.net/cursors/cur-9/cur830.cur'), auto;
         }
         .fade-in {
             animation: fadeIn 1s ease-in;
@@ -60,12 +59,12 @@ st.markdown("""
             text-shadow: 0 0 10px pink;
         }
         .sparkle {
-            position: relative;
-            animation: glitter 1.5s infinite alternate;
+            animation: shimmer 1.2s infinite;
         }
-        @keyframes glitter {
-            0% { filter: brightness(1); }
-            100% { filter: brightness(1.5); }
+        @keyframes shimmer {
+            0% { filter: drop-shadow(0 0 5px pink); }
+            50% { filter: drop-shadow(0 0 15px hotpink); }
+            100% { filter: drop-shadow(0 0 5px pink); }
         }
     </style>
 """, unsafe_allow_html=True)
@@ -129,3 +128,4 @@ for i in range(len(images)):
     else:
         dot_container += "<span style='font-size: 20px; color: lightgray;'>●</span> "
 st.markdown(f"<div style='text-align:center; margin-top:10px;'>{dot_container}</div>", unsafe_allow_html=True)
+
