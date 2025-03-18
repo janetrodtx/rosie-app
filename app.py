@@ -25,14 +25,19 @@ if "page" not in st.session_state:
 def next_page():
     if st.session_state.page < len(images) - 1:
         st.session_state.page += 1
+        st.audio("hairdryer.mp3", autoplay=True)
 
 def previous_page():
     if st.session_state.page > 0:
         st.session_state.page -= 1
+        st.audio("hairdryer.mp3", autoplay=True)
 
-# Add smooth fade-in CSS animation
+# Add custom CSS for glam
 st.markdown("""
     <style>
+        body, .stApp {
+            cursor: url('https://cdn-icons-png.flaticon.com/512/2913/2913461.png'), auto;
+        }
         .fade-in {
             animation: fadeIn 1s ease-in;
         }
@@ -45,6 +50,18 @@ st.markdown("""
             font-weight: bold;
             text-align: center;
             font-size: 16px;
+            transition: text-shadow 0.3s ease-in-out;
+        }
+        .pink-button:hover {
+            text-shadow: 0 0 10px pink;
+        }
+        .sparkle {
+            position: relative;
+            animation: glitter 1.5s infinite alternate;
+        }
+        @keyframes glitter {
+            0% { filter: brightness(1); }
+            100% { filter: brightness(1.3); }
         }
     </style>
 """, unsafe_allow_html=True)
@@ -58,11 +75,11 @@ try:
 except FileNotFoundError:
     st.error(f"Image file not found: {current_image_path}")
 
-# If on last page, show clickable image for booking only
+# If on last page, show clickable image for booking only with sparkle effect
 if links:
     st.markdown(f"""
         <a href='{links['booking']}' target='_blank'>
-            <img src='data:image/png;base64,{encoded_image}' class='fade-in' style='width:100%; border-radius:10px;' />
+            <img src='data:image/png;base64,{encoded_image}' class='fade-in sparkle' style='width:100%; border-radius:10px;' />
         </a>
     """, unsafe_allow_html=True)
 else:
