@@ -1,5 +1,7 @@
 import streamlit as st
 from PIL import Image
+import base64
+import io
 
 # Image paths and corresponding links for the last page
 images = [
@@ -25,8 +27,13 @@ def next_page():
 
 # Display current image
 current_image_path, links = images[st.session_state.page]
-image = Image.open(current_image_path)
-st.image(image, use_container_width=True)
+try:
+    with open(current_image_path, "rb") as img_file:
+        image_bytes = img_file.read()
+        image = Image.open(io.BytesIO(image_bytes))
+        st.image(image, use_container_width=True)
+except FileNotFoundError:
+    st.error(f"Image file not found: {current_image_path}")
 
 # If on last page, add clickable elements
 if links:
@@ -38,10 +45,11 @@ if links:
         if st.button("Book Appointment 📅", key="book"):
             st.markdown(f"[Click here to book]({links['booking']})", unsafe_allow_html=True)
 
-    # Clickable image for booking link
+    # Clickable image for booking link (displayed)
+    encoded_image = base64.b64encode(image_bytes).decode()
     st.markdown(f"""
         <a href='{links['booking']}' target='_blank'>
-            <img src='data:image/png;base64,{image}' style='display:none;'/>
+            <img src='data:image/png;base64,{encoded_image}' style='width:100%; border-radius:10px;'/>
         </a>
     """, unsafe_allow_html=True)
 
@@ -51,3 +59,4 @@ if st.session_state.page < len(images) - 1:
     with col:
         if st.button("Next ➡️", key="next_button"):
             next_page()
+
