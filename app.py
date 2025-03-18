@@ -25,12 +25,10 @@ if "page" not in st.session_state:
 def next_page():
     if st.session_state.page < len(images) - 1:
         st.session_state.page += 1
-        st.audio("hairdryer.mp3", autoplay=True)
 
 def previous_page():
     if st.session_state.page > 0:
         st.session_state.page -= 1
-        st.audio("hairdryer.mp3", autoplay=True)
 
 # Add custom CSS for glam
 st.markdown("""
